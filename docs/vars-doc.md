@@ -4,7 +4,7 @@ This page gives you an explanation of the variables found in the [vars.yaml](exa
 
 There are [examples provided](#example-vars-file) in this page for various workflows.
 
-## Disk to install RHCOS
+## Disk to install FCOS
 
 > **OPTIONAL** if doing static ips
 
@@ -14,7 +14,7 @@ In the first section, you'll see that it's asking for a disk
 disk: vda
 ```
 
-This needs to be set to the disk where you are installing RHCOS on the masters/workers. This will be set in the boot options for the [pxe server](../templates/default.j2).
+This needs to be set to the disk where you are installing FCOS on the masters/workers. This will be set in the boot options for the [pxe server](../templates/default.j2).
 
 **NOTE**: This will be the same for ALL masters and workers. Support for "mixed disk" (i.e. if your masters use `sda` and your workers are `vda`) is not supported at this time
 
@@ -48,7 +48,7 @@ This section sets up your DNS server.
 ```
 dns:
   domain: "example.com"
-  clusterid: "ocp4"
+  clusterid: "okd4"
   forwarder1: "8.8.8.8"
   forwarder2: "8.8.4.4"
 ```
@@ -60,9 +60,9 @@ Explanation of the DNS variables:
 * `dns.forwarder1` - Tis will be set up as the DNS forwarder. This is usually one of the corporate (or "upstream") DNS servers.
 * `dns.forwarder2` - Tis will be set up as the second DNS forwarder. This is usually one of the corporate (or "upstream") DNS servers.
 
-The DNS server will be set up using `dns.clusterid` + `dns.domain` as the domain it's serving. In the above example, the helper will be setup to be the SOA for `ocp4.example.com`. The helper will also be setup as it's [own DNS server](../templates/resolv.conf.j2)
+The DNS server will be set up using `dns.clusterid` + `dns.domain` as the domain it's serving. In the above example, the helper will be setup to be the SOA for `okd4.example.com`. The helper will also be setup as it's [own DNS server](../templates/resolv.conf.j2)
 
-**NOTE**: Although you _CAN_ use the helper as your dns server. It's best to have your DNS server delegate the `dns.clusterid` + `dns.domain` domain to the helper (i.e. Delegate `ocp4.example.com` to the helper)
+**NOTE**: Although you _CAN_ use the helper as your dns server. It's best to have your DNS server delegate the `dns.clusterid` + `dns.domain` domain to the helper (i.e. Delegate `okd4.example.com` to the helper)
 
 ## DHCP Section
 
@@ -173,37 +173,37 @@ In order to use static IPs, you'll need to pass `-e staticips=true` to your `ans
 staticips: true
 ```
 
-This effectively disables DHCP, TFTP, and PXE on the helper. This implicitly means that you will be doing an ISO/CD-ROM/USB install of RHCOS.
+This effectively disables DHCP, TFTP, and PXE on the helper. This implicitly means that you will be doing an ISO/CD-ROM/USB install of FCOS.
 
 **NOTE**: The default setting is `staticips: false` which installs DHCP, TFTP, and PXE.
 
 ### Specifying Artifacts
 
-You can have the helper deploy specific artifacts for a paticular version of OCP. Or, the nightly builds of OpenShift 4 or even OKD. Adding the following to your `vars.yaml` file will pull in the coresponding artifacts. Below is an example of pulling the `4.2.0-0.nightly-2019-09-16-114316` nightly build:
+You can have the helper deploy specific artifacts for a paticular version of OKD. Or, the nightly builds of OpenShift 4 or even OKD. Adding the following to your `vars.yaml` file will pull in the coresponding artifacts. Below is an example of pulling the `4.2.0-0.nightly-2019-09-16-114316` nightly build:
 
-> :warning: note, you need to use the `ocp_bios` var for the rootfs image for 4.6+
+> :warning: note, you need to use the `okd_bios` var for the rootfs image for 4.6+
 
 ```
-ocp_bios: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/rhcos-42.80.20190828.2-metal-bios.raw.gz"
-ocp_initramfs: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/rhcos-42.80.20190828.2-installer-initramfs.img"
-ocp_install_kernel: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/rhcos-42.80.20190828.2-installer-kernel"
-ocp_client: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/latest/openshift-client-linux-4.2.0-0.nightly-2019-09-16-114316.tar.gz"
-ocp_installer: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/latest/openshift-install-linux-4.2.0-0.nightly-2019-09-16-114316.tar.gz"
+okd_bios: "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20201214.3.0/x86_64/fedora-coreos-33.20201214.3.0-live-rootfs.x86_64.img"
+okd_initramfs: "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20201214.3.0/x86_64/fedora-coreos-33.20201214.3.0-live-initramfs.x86_64.img"
+okd_install_kernel: "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20201214.3.0/x86_64/fedora-coreos-33.20201214.3.0-live-kernel-x86_64"
+okd_client: "https://github.com/openshift/okd/releases/download/4.6.0-0.okd-2021-01-17-185703/openshift-client-linux-4.6.0-0.okd-2021-01-17-185703.tar.gz"
+okd_installer: "https://github.com/openshift/okd/releases/download/4.6.0-0.okd-2021-01-17-185703/openshift-install-linux-4.6.0-0.okd-2021-01-17-185703.tar.gz"
 ```
 
 To find the latest nighly build links:
 
-* [Install Artifacts](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/)
+* [Install Artifacts](https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/pre-release/latest/)
 * [Client and Installer](https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/latest/)
 
 You can also point these vars to files local to the helper. This is useful when doing a disconnected insall and you have "sneaker-netted" the artifacts over. For example:
 
 ```
-ocp_bios: "file:///tmp/rhcos-42.80.20190828.2-metal-bios.raw.gz"
-ocp_initramfs: "file:///tmp/rhcos-42.80.20190828.2-installer-initramfs.img"
-ocp_install_kernel: "file:///tmp/rhcos-42.80.20190828.2-installer-kernel"
-ocp_client: "file:///tmp/openshift-client-linux-4.2.0-0.nightly-2019-09-16-114316.tar.gz"
-ocp_installer: "file:///tmp/openshift-install-linux-4.2.0-0.nightly-2019-09-16-114316.tar.gz"
+okd_bios: "file:///tmp/fedora-coreos-33.20201214.3.0-live-rootfs.x86_64.img"
+okd_initramfs: "file:///tmp/fedora-coreos-33.20201214.3.0-live-initramfs.x86_64.img"
+okd_install_kernel: "file:///tmp/fedora-coreos-33.20201214.3.0-live-kernel-x86_64"
+okd_client: "file:///tmp/openshift-client-linux-4.6.0-0.okd-2021-01-17-185703.tar.gz"
+okd_installer: "file:///tmp/openshift-install-linux-4.6.0-0.okd-2021-01-17-185703.tar.gz"
 ```
 
 The [default](../vars/main.yml#L4-L8) is to use the latest **stable** OpenShift 4 release.
@@ -313,7 +313,7 @@ setup_registry:
   deploy: false
   autosync_registry: false
   registry_image: docker.io/library/registry:2
-  local_repo: "ocp4/openshift4"
+  local_repo: "okd4/openshift4"
   product_repo: "openshift-release-dev"
   release_name: "ocp-release"
   release_tag: "4.4.9-x86_64"
@@ -329,7 +329,7 @@ setup_registry:
 
 ### Running on Power
 
-In order to run the helper node on Power for deploying OCP on Power you'll need to pass `-e ppc64le=true` to your `ansible-playbook` command or add the following in your `vars.yaml` file
+In order to run the helper node on Power for deploying OKD on Power you'll need to pass `-e ppc64le=true` to your `ansible-playbook` command or add the following in your `vars.yaml` file
 
 ```
 ppc64le: true
@@ -373,25 +373,25 @@ This playbook does NOT set up Chrony for you, instead it provides you with the `
 
 __Pre-Install__
 
-When installing OpenShift, there is a step to create the manifests. Here is an example of creating the manifests under the `~/ocp4` directory.
+When installing OpenShift, there is a step to create the manifests. Here is an example of creating the manifests under the `~/okd4` directory.
 
 ```shell
-openshift-install create manifests --dir=~/ocp4
+openshift-install create manifests --dir=~/okd4
 ```
 
-This will create the `manifests` directory and the `openshift` directory under `~/ocp4`
+This will create the `manifests` directory and the `openshift` directory under `~/okd4`
 
 ```shell
-# ll ~/ocp4
+# ll ~/okd4
 total 8
 drwxr-x---. 2 root root 4096 Jul 16 08:08 manifests
 drwxr-x---. 2 root root 4096 Jul 16 08:06 openshift
 ```
 
-The playbook created the `machineConfig` files where you cloned the repo. For example, if I cloned the repo in my homedir; it'll be under `~/ocp4-helpernode/machineconfig/`.
+The playbook created the `machineConfig` files where you cloned the repo. For example, if I cloned the repo in my homedir; it'll be under `~/okd4-helpernode/machineconfig/`.
 
 ```shell
-# ll ~/ocp4-helpernode/machineconfig/
+# ll ~/okd4-helpernode/machineconfig/
 total 8
 -rw-r--r--. 1 root root 748 Jul 16 07:59 99-master-chrony-configuration.yaml
 -rw-r--r--. 1 root root 748 Jul 16 07:59 99-worker-chrony-configuration.yaml
@@ -400,7 +400,7 @@ total 8
 Copy over these to the `openshift` directory in the installation directory.
 
 ```shell
-cp ~/ocp4-helpernode/machineconfig/* ~/ocp4/openshift/
+cp ~/okd4-helpernode/machineconfig/* ~/okd4/openshift/
 ```
 
 Continue on with the installation. Once done you should have chrony setup pointing to your NTP servers.
@@ -415,8 +415,8 @@ NAME                             GENERATEDBYCONTROLLER   IGNITIONVERSION   AGE
 You can see the config if you login to one of your nodes and take a look at the file.
 
 ```shell
-# oc debug node/worker1.ocp4.example.com
-Starting pod/worker1ocp4examplecom-debug ...
+# oc debug node/worker1.okd4.example.com
+Starting pod/worker1okd4examplecom-debug ...
 To use host binaries, run `chroot /host`
 Pod IP: 192.168.7.12
 If you don't see a command prompt, try pressing enter.
@@ -436,7 +436,7 @@ __Post-Install__
 To set this up post-installation, just apply the `machineConfig` using `oc apply -f`. For example:
 
 ```shell
-oc apply  -f ~/ocp4-helpernode/machineconfig/
+oc apply  -f ~/okd4-helpernode/machineconfig/
 ```
 
 :warning: This will reboot ALL your nodes (masters/workers) in a "rolling" fashion. You can check this with `oc get nodes`
@@ -444,11 +444,11 @@ oc apply  -f ~/ocp4-helpernode/machineconfig/
 ```shell
 # oc get nodes
 NAME                       STATUS                     ROLES    AGE   VERSION
-master0.ocp4.example.com   Ready                      master   41m   v1.17.1+912792b
-master1.ocp4.example.com   Ready                      master   41m   v1.17.1+912792b
-master2.ocp4.example.com   Ready,SchedulingDisabled   master   41m   v1.17.1+912792b
-worker0.ocp4.example.com   Ready,SchedulingDisabled   worker   26m   v1.17.1+912792b
-worker1.ocp4.example.com   Ready                      worker   26m   v1.17.1+912792b
+master0.okd4.example.com   Ready                      master   41m   v1.17.1+912792b
+master1.okd4.example.com   Ready                      master   41m   v1.17.1+912792b
+master2.okd4.example.com   Ready,SchedulingDisabled   master   41m   v1.17.1+912792b
+worker0.okd4.example.com   Ready,SchedulingDisabled   worker   26m   v1.17.1+912792b
+worker1.okd4.example.com   Ready                      worker   26m   v1.17.1+912792b
 ```
 
 

@@ -43,8 +43,8 @@ Install `ansible` and `git` and clone this repo
 
 ```
 yum -y install ansible git
-git clone https://github.com/RedHatOfficial/ocp4-helpernode
-cd ocp4-helpernode
+git clone https://github.com/preinking/okd4-helpernode
+cd okd4-helpernode
 ```
 
 Get the mac address of the instances/vms/servers that are going to be your OpenShift 4 cluster. At a minimum you need 1 bootstrap, 3 masters, and 2 workers. So you'll need to have 6 Mac Addresses
@@ -77,8 +77,8 @@ After it is done run the following to get info about your environment and some i
 Now you can start the installation process. Create an install dir.
 
 ```
-mkdir ~/ocp4
-cd ~/ocp4
+mkdir ~/okd4
+cd ~/okd4
 ```
 
 Create a place to store your pull-secret
@@ -120,7 +120,7 @@ controlPlane:
   name: master
   replicas: 3
 metadata:
-  name: ocp4
+  name: okd4
 networking:
   clusterNetworks:
   - cidr: 10.254.0.0/16
@@ -174,7 +174,7 @@ openshift-install create ignition-configs
 Finally, copy the ignition files in the `ignition` directory for the websever
 
 ```
-cp ~/ocp4/*.ign /var/www/html/ignition/
+cp ~/okd4/*.ign /var/www/html/ignition/
 restorecon -vR /var/www/html/
 chmod o+r /var/www/html/ignition/*.ign
 ```
@@ -211,7 +211,7 @@ Once you see this message below...
 ```
 DEBUG OpenShift Installer v4.2.0-201905212232-dirty
 DEBUG Built from commit 71d8978039726046929729ad15302973e3da18ce
-INFO Waiting up to 30m0s for the Kubernetes API at https://api.ocp4.example.com:6443...
+INFO Waiting up to 30m0s for the Kubernetes API at https://api.okd4.example.com:6443...
 INFO API v1.13.4+838b4fa up
 INFO Waiting up to 30m0s for bootstrapping to complete...
 DEBUG Bootstrap status: complete
@@ -228,7 +228,7 @@ INFO It is now safe to remove the bootstrap resources
 First, login to your cluster
 
 ```
-export KUBECONFIG=/root/ocp4/auth/kubeconfig
+export KUBECONFIG=/root/okd4/auth/kubeconfig
 ```
 
 Your install may be waiting for worker nodes to get approved. Normally the `machineconfig node approval operator` takes care of this for you. However, sometimes this needs to be done manually. Check pending CSRs with the following command.
@@ -277,10 +277,10 @@ openshift-install wait-for install-complete
 
 ## Login to the web console
 
-The OpenShift 4 web console will be running at `https://console-openshift-console.apps.{{ dns.clusterid }}.{{ dns.domain }}` (e.g. `https://console-openshift-console.apps.ocp4.example.com`)
+The OpenShift 4 web console will be running at `https://console-openshift-console.apps.{{ dns.clusterid }}.{{ dns.domain }}` (e.g. `https://console-openshift-console.apps.okd4.example.com`)
 
 * Username: kubeadmin
-* Password: the output of `cat /root/ocp4/auth/kubeadmin-password`
+* Password: the output of `cat /root/okd4/auth/kubeadmin-password`
 
 ## Upgrade
 

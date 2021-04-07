@@ -10,7 +10,7 @@ interval 2
 weight {{ calibrated_priority }}
 }
 
-vrrp_instance OCP_LB {
+vrrp_instance OKD_LB {
    state {{ h.state }}
    interface {{ networkifacename }}
    virtual_router_id {{ helper.ipaddr.split('.')[3] }}

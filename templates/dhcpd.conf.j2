@@ -11,9 +11,7 @@ max-lease-time 14400;
     option domain-search            "{{ dns.clusterid }}.{{ dns.domain | lower }}", "{{ dns.domain | lower }}";
 
     subnet {{ dhcp.ipid }} netmask {{ dhcp.netmaskid }} {
-    interface {{ networkifacename }};
-        pool {
-            range {{ dhcp.poolstart }} {{ dhcp.poolend }};
+        interface {{ networkifacename }};
         # Static entries
 {% if bootstrap is defined %}
         host {{ bootstrap.name | lower }} { hardware ethernet {{ bootstrap.macaddr }}; fixed-address {{ bootstrap.ipaddr }}; }
@@ -42,5 +40,4 @@ max-lease-time 14400;
 {% endif %}
 
         next-server {{ helper.ipaddr }};
-        }
 }

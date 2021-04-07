@@ -42,8 +42,8 @@ Install `ansible` and `git` and clone this repo
 
 ```
 yum -y install ansible git
-git clone https://github.com/RedHatOfficial/ocp4-helpernode
-cd ocp4-helpernode
+git clone https://github.com/preinking/okd4-helpernode
+cd okd4-helpernode
 ```
 
 Create the [vars-static.yaml](examples/vars-static.yaml) file with the IP addresss that will be assigned to the masters/workers/boostrap. The IP addresses need to be right since they will be used to create your DNS server.
@@ -75,8 +75,8 @@ After it is done run the following to get info about your environment and some i
 Now you can start the installation process. Create an install dir.
 
 ```
-mkdir ~/ocp4
-cd ~/ocp4
+mkdir ~/okd4
+cd ~/okd4
 ```
 
 Create a place to store your pull-secret
@@ -118,7 +118,7 @@ controlPlane:
   name: master
   replicas: 3
 metadata:
-  name: ocp4
+  name: okd4
 networking:
   clusterNetworks:
   - cidr: 10.254.0.0/16
@@ -172,27 +172,27 @@ openshift-install create ignition-configs
 Finally, copy the ignition files in the `ignition` directory for the websever
 
 ```
-cp ~/ocp4/*.ign /var/www/html/ignition/
+cp ~/okd4/*.ign /var/www/html/ignition/
 restorecon -vR /var/www/html/
 chmod o+r /var/www/html/ignition/*.ign
 ```
 
 ## Install Instances
 
-> :warning: Read all the instructions before attempting to install RHCOS!
+> :warning: Read all the instructions before attempting to install FCOS!
 
-Boot into your instance using the [RHCOS ISO Installer](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/4.4.3/)
+Boot into your instance using the [FCOS ISO Installer](https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/latest/4.4.3/)
 
 Once booted; press `tab` on the boot menu
 
-![rhcos](images/rhcos.png)
+![fcos](images/fcos.png)
 
 Add your staticips and coreos options. Here is an example of what I used for my bootstrap node. (type this **ALL IN ONE LINE** ...I only used linebreaks here for ease of readability...but type it all in one line)
 
-> If installing 4.5 and earlier, you need `coreos.inst.image_url=http://192.168.7.77:8080/install/bios.raw.gz`
+> If installing 4.5 and earlier, you need `coreos.inst.image_url=http://192.168.7.77:8080/install/bios.raw.xz`
 
 ```
-ip=192.168.7.20::192.168.7.1:255.255.255.0:bootstrap.ocp4.example.com:enp1s0:none
+ip=192.168.7.20::192.168.7.1:255.255.255.0:bootstrap.okd4.example.com:enp1s0:none
 nameserver=192.168.7.77
 coreos.inst.install_dev=vda
 coreos.live.rootfs_url=http://192.168.7.77:8080/install/rootfs.img
@@ -234,7 +234,7 @@ Once you see this message below...
 ```
 DEBUG OpenShift Installer v4.2.0-201905212232-dirty
 DEBUG Built from commit 71d8978039726046929729ad15302973e3da18ce
-INFO Waiting up to 30m0s for the Kubernetes API at https://api.ocp4.example.com:6443...
+INFO Waiting up to 30m0s for the Kubernetes API at https://api.okd4.example.com:6443...
 INFO API v1.13.4+838b4fa up
 INFO Waiting up to 30m0s for bootstrapping to complete...
 DEBUG Bootstrap status: complete
@@ -248,7 +248,7 @@ INFO It is now safe to remove the bootstrap resources
 First, login to your cluster
 
 ```
-export KUBECONFIG=/root/ocp4/auth/kubeconfig
+export KUBECONFIG=/root/okd4/auth/kubeconfig
 ```
 
 Your install may be waiting for worker nodes to get approved. Normally the `machineconfig node approval operator` takes care of this for you. However, sometimes this needs to be done manually. Check pending CSRs with the following command.
@@ -297,10 +297,10 @@ openshift-install wait-for install-complete
 
 ## Login to the web console
 
-The OpenShift 4 web console will be running at `https://console-openshift-console.apps.{{ dns.clusterid }}.{{ dns.domain }}` (e.g. `https://console-openshift-console.apps.ocp4.example.com`)
+The OpenShift 4 web console will be running at `https://console-openshift-console.apps.{{ dns.clusterid }}.{{ dns.domain }}` (e.g. `https://console-openshift-console.apps.okd4.example.com`)
 
 * Username: kubeadmin
-* Password: the output of `cat /root/ocp4/auth/kubeadmin-password`
+* Password: the output of `cat /root/okd4/auth/kubeadmin-password`
 
 ## Upgrade
 

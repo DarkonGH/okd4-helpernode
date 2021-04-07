@@ -1,9 +1,9 @@
-# OCP4 Helper Node
+# OKD4 Helper Node
 
 > :heavy_exclamation_mark: *Red Hat support cannot assist with problems with this Repo*. For issues please open a GitHub issue
 
 
-#### [HelperNode v2 Alpha Now Available!](https://redhatofficial.github.io/ocp4-helpernode/)
+#### [HelperNode v2 Alpha Now Available!](https://redhatofficial.github.io/okd4-helpernode/)
 
 This playbook helps set up an "all-in-one" node, that has all the infrastructure/services in order to install OpenShift 4. After you run the playbook, you'll be ready to begin the installation process.
 
@@ -15,19 +15,19 @@ This playbook assumes the following:
 
 1. You're on a Network that has access to the internet.
 2. The network you're on does NOT have DHCP (you can disable installing DHCP on the helper).
-3. The ocp4-helpernode will be your LB/DHCP/PXE/DNS and HTTP server.
+3. The okd4-helpernode will be your LB/DHCP/PXE/DNS and HTTP server.
 4. You still have to do the OpenShift Install steps by hand.
 5. I used CentOS 7/8, but RHEL 7/8 will work as well.
-6. You will be running the `openshift-install` command from the ocp4-helpernode.
+6. You will be running the `openshift-install` command from the okd4-helpernode.
 
-Below is a highlevel diagram how the ocp4-helpernode fits into your network.
+Below is a highlevel diagram how the okd4-helpernode fits into your network.
 
-![ocp4-helpernode](docs/images/hn.png)
+![okd4-helpernode](docs/images/hn.png)
 
 
-It's important to note that you can delegate DNS to this ocp4-helpernode if you don't want to use it as your main DNS server. You will have to delegate `$CLUSTERID.$DOMAIN` to this helper node.
+It's important to note that you can delegate DNS to this okd4-helpernode if you don't want to use it as your main DNS server. You will have to delegate `$CLUSTERID.$DOMAIN` to this helper node.
 
-For example; if you want a `$CLUSTERID` of **ocp4**, and you have a `$DOMAIN` of **example.com**. Then you will delegate `ocp4.example.com` to this ocp4-helpernode.
+For example; if you want a `$CLUSTERID` of **okd4**, and you have a `$DOMAIN` of **example.com**. Then you will delegate `okd4.example.com` to this okd4-helpernode.
 
 # Using this playbook
 
@@ -57,8 +57,8 @@ Next install `ansible` and `git`, then clone this repo.
 
 ```
 yum -y install ansible git
-git clone https://github.com/RedHatOfficial/ocp4-helpernode
-cd ocp4-helpernode
+git clone https://github.com/preinking/okd4-helpernode
+cd okd4-helpernode
 ```
 
 ## Setup your Environment Vars
@@ -92,7 +92,7 @@ You can run this script and it's options to display helpful information about th
 
 ## Install OpenShift 4 UPI
 
-Now you're ready to follow the [OCP4 UPI install doc](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html#ssh-agent-using_installing-bare-metal)
+Now you're ready to follow the [OKD4 UPI install doc](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html#ssh-agent-using_installing-bare-metal)
 
 
 # Quickstarts
@@ -106,7 +106,7 @@ The following are quickstarts. These are written using libvirt, but are generic 
 * Libvirt Static IPs install [quickstart](docs/quickstart-static.md)
 * DHCP install on KVM/Power [quickstart](docs/quickstart-ppc64le.md)
 * DHCP install on PowerVM [quickstart](docs/quickstart-powervm.md)
-* OCP4 on VMware vSphere UPI Automation [quickstart](https://github.com/RedHatOfficial/ocp4-vsphere-upi-automation)
+* OKD4 on VMware vSphere UPI Automation [quickstart](https://github.com/preinking/okd4-vsphere-upi-automation)
 * A Video "how-to" done on a [Twitch Stream](docs/yt-twitch.md)
 
 # Contributing

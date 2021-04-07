@@ -2,7 +2,7 @@
 
 This quickstart will get you up and running on PowerVM server managed using [HMC](https://www.ibm.com/support/knowledgecenter/en/9009-22A/p9eh6/p9eh6_kickoff.htm).
 
-This playbook will set up an "all-in-one" node (called ocp4-helpernode), that has all the infrastructure/services in order to install OpenShift 4. 
+This playbook will set up an "all-in-one" node (called okd4-helpernode), that has all the infrastructure/services in order to install OpenShift 4. 
 This playbook will also install an OpenShift 4 cluster with 3 master nodes and 2 worker nodes.
 After you run the playbook, you'll be ready to logon to the OpenShift cluster.
 
@@ -12,15 +12,15 @@ This playbook assumes the following:
 
 1. You're on a Network that has access to the internet.
 2. The network you're on does NOT have DHCP (or you can block your existing DHCP from responding to the MAC addresses used for the OpenShift LPARs).
-3. The ocp4-helpernode will be your Load Balancer/DHCP/TFTP/DNS/HTTP and NFS server for the OpenShift cluster.
+3. The okd4-helpernode will be your Load Balancer/DHCP/TFTP/DNS/HTTP and NFS server for the OpenShift cluster.
 
-![OpenShift-Cluster](https://raw.githubusercontent.com/RedHatOfficial/ocp4-helpernode/master/docs/images/hn.png)
+![OpenShift-Cluster](https://raw.githubusercontent.com/preinking/okd4-helpernode/master/docs/images/hn.png)
 
-It's important to note that you can delegate DNS to the ocp4-helpernode if you don't want to use it as your main DNS server. You will have to delegate `$CLUSTERID.$DOMAIN` to this helper node.
+It's important to note that you can delegate DNS to the okd4-helpernode if you don't want to use it as your main DNS server. You will have to delegate `$CLUSTERID.$DOMAIN` to this helper node.
 
-For example; if you want a `$CLUSTERID` of **ocp4**, and you have a `$DOMAIN` of **example.com**. Then you will delegate `ocp4.example.com` to this ocp4-helpernode.
+For example; if you want a `$CLUSTERID` of **okd4**, and you have a `$DOMAIN` of **example.com**. Then you will delegate `okd4.example.com` to this okd4-helpernode.
 
-## Create the Helper Node (ocp4-helpernode)
+## Create the Helper Node (okd4-helpernode)
 
 Create helper LPAR using the HMC GUI or HMC mksyscfg command.
 To start, ssh to your HMC host to use the CLI. You can also use the HMC GUI. The steps in these guide are specific to CLI.
@@ -30,7 +30,7 @@ To start, ssh to your HMC host to use the CLI. You can also use the HMC GUI. The
 * 120 GB HD (OS) + 880 GB HD (NFS)
 
 ```
-$ mksyscfg -r lpar -m <managed_system> -i name=ocp4-helper, profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=8192, desired_mem=32768, max_mem=32768, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.4, max_proc_units=4.0, min_procs=1, desired_procs=2, max_procs=2, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
+$ mksyscfg -r lpar -m <managed_system> -i name=okd4-helper, profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=8192, desired_mem=32768, max_mem=32768, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.4, max_proc_units=4.0, min_procs=1, desired_procs=2, max_procs=2, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
 ```
 
 > **NOTE** Make sure you attach the LPAR to the appropriate network and add storage (HMC GUI or chsyscfg command) after successful LPAR creation.
@@ -57,7 +57,7 @@ Create one bootstrap LPAR.
 * 120 GB HD (OS)
 
 ```
-$ mksyscfg -r lpar -m <managed_system> -i name=ocp4-bootstrap, profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=8192, desired_mem=32768, max_mem=32768, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.4, max_proc_units=4.0, min_procs=1, desired_procs=2, max_procs=4, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
+$ mksyscfg -r lpar -m <managed_system> -i name=okd4-bootstrap, profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=8192, desired_mem=32768, max_mem=32768, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.4, max_proc_units=4.0, min_procs=1, desired_procs=2, max_procs=4, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
 ```
 
 > **NOTE** Make sure you attach the LPAR to the appropriate network and add storage (HMC GUI or HMC chsyscfg command) after successful LPAR creation.
@@ -74,7 +74,7 @@ Create the three master LPARs.
 ```
 $ for i in master{0..2}
 do
-  mksyscfg -r lpar -m <managed_system> -i name="ocp4-${i}", profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=32768, desired_mem=32768, max_mem=16384, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.2, max_proc_units=4.0, min_procs=2, desired_procs=2, max_procs=2, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
+  mksyscfg -r lpar -m <managed_system> -i name="okd4-${i}", profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=32768, desired_mem=32768, max_mem=16384, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.2, max_proc_units=4.0, min_procs=2, desired_procs=2, max_procs=2, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
 done
 ```
 
@@ -92,7 +92,7 @@ Create the two worker LPARs.
 ```
 $ for i in worker{0..1}
 do
-  mksyscfg -r lpar -m <managed_system> -i name="ocp4-${i}", profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=16384, desired_mem=32768, max_mem=262144, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.8, max_proc_units=4.0, min_procs=1, desired_procs=4, max_procs=16, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
+  mksyscfg -r lpar -m <managed_system> -i name="okd4-${i}", profile_name=default_profile, lpar_env=aixlinux, shared_proc_pool_util_auth=1, min_mem=16384, desired_mem=32768, max_mem=262144, proc_mode=shared, min_proc_units=0.2, desired_proc_units=0.8, max_proc_units=4.0, min_procs=1, desired_procs=4, max_procs=16, sharing_mode=uncap, uncap_weight=128, max_virtual_slots=64, boot_mode=norm, conn_monitoring=1
 done
 ```
 
@@ -186,14 +186,14 @@ $ ls -1 ~/.ssh/id_rsa
 /root/.ssh/id_rsa
 ```
 
-## Download ocp4-helpernode playbook
+## Download okd4-helpernode playbook
 
 ```shell
-git clone https://github.com/RedHatOfficial/ocp4-helpernode
-cd ocp4-helpernode
+git clone https://github.com/preinking/okd4-helpernode
+cd okd4-helpernode
 ```
 
-## Create installation variable file `vars.yaml` in `ocp4-helpernode` directory
+## Create installation variable file `vars.yaml` in `okd4-helpernode` directory
 
 ```shell
 cp docs/examples/vars-ppc64le.yaml vars.yaml
@@ -225,8 +225,8 @@ After it is done run the following to get info about your environment and some i
 Now you can start the installation process. Create an install dir.
 
 ```
-mkdir ~/ocp4
-cd ~/ocp4
+mkdir ~/okd4
+cd ~/okd4
 ```
 
 ### Create an `install-config.yaml` file
@@ -246,7 +246,7 @@ controlPlane:
   name: master
   replicas: 3
 metadata:
-  name: ocp4
+  name: okd4
 networking:
   clusterNetworks:
   - cidr: 10.254.0.0/16
@@ -302,14 +302,14 @@ openshift-install create ignition-configs
 Finally, copy the ignition files in the `ignition` directory for the websever
 
 ```
-cp ~/ocp4/*.ign /var/www/html/ignition/
+cp ~/okd4/*.ign /var/www/html/ignition/
 restorecon -vR /var/www/html/
 chmod o+r /var/www/html/ignition/*.ign
 ```
 
-## Install RHCOS to all LPARs
+## Install FCOS to all LPARs
 
-After helper node is setup with all the services for OCP, now it is time to boot it up to install RHCOS on to LPAR's disk and complete the OCP installation. The following command HMC CLI can be used to boot the LPAR with bootp, it need to be run on HMC system:
+After helper node is setup with all the services for OKD, now it is time to boot it up to install FCOS on to LPAR's disk and complete the OKD installation. The following command HMC CLI can be used to boot the LPAR with bootp, it need to be run on HMC system:
 
 lpar_netboot  -f -t ent -m <macaddr> -s auto -d auto <lpar_name> <profile_name> <managed_system>
 
@@ -345,7 +345,7 @@ Once you see this message below...
 ```
 DEBUG OpenShift Installer v4.2.0-201905212232-dirty
 DEBUG Built from commit 71d8978039726046929729ad15302973e3da18ce
-INFO Waiting up to 30m0s for the Kubernetes API at https://api.ocp4.example.com:6443...
+INFO Waiting up to 30m0s for the Kubernetes API at https://api.okd4.example.com:6443...
 INFO API v1.13.4+838b4fa up
 INFO Waiting up to 30m0s for bootstrapping to complete...
 DEBUG Bootstrap status: complete
@@ -355,8 +355,8 @@ INFO It is now safe to remove the bootstrap resources
 ...you can continue....at this point you can delete the bootstrap server.
 
 **Note:**
-If the LPARs are using SEA (ibmveth driver), then the following settings need to be applied to all the OCP nodes
-to avoid install failures due to packet drop issues. SSH to the OCP nodes from helpernode and apply the settings.
+If the LPARs are using SEA (ibmveth driver), then the following settings need to be applied to all the OKD nodes
+to avoid install failures due to packet drop issues. SSH to the OKD nodes from helpernode and apply the settings.
 ```
 sudo sysctl -w net.ipv4.route.min_pmtu=1450
 sudo sysctl -w net.ipv4.ip_no_pmtu_disc=1
@@ -369,7 +369,7 @@ echo 'net.ipv4.ip_no_pmtu_disc = 1' | sudo tee --append /etc/sysctl.d/88-sysctl.
 First, login to your cluster
 
 ```
-export KUBECONFIG=/root/ocp4/auth/kubeconfig
+export KUBECONFIG=/root/okd4/auth/kubeconfig
 ```
 
 Set the registry for your cluster
@@ -420,10 +420,10 @@ openshift-install wait-for install-complete
 
 ## Login to the web console
 
-The OpenShift 4 web console will be running at `https://console-openshift-console.apps.{{ dns.clusterid }}.{{ dns.domain }}` (e.g. `https://console-openshift-console.apps.ocp4.example.com`)
+The OpenShift 4 web console will be running at `https://console-openshift-console.apps.{{ dns.clusterid }}.{{ dns.domain }}` (e.g. `https://console-openshift-console.apps.okd4.example.com`)
 
 * Username: kubeadmin
-* Password: the output of `cat /root/ocp4/auth/kubeadmin-password`
+* Password: the output of `cat /root/okd4/auth/kubeadmin-password`
 
 ## Upgrade
 
@@ -439,7 +439,7 @@ If you're having issues upgrading you can try adding `--force` to the upgrade co
 oc adm upgrade --to-latest --force
 ```
 
-See [issue #46](https://github.com/RedHatOfficial/ocp4-helpernode/issues/46) to understand why the `--force` is necessary and an alternative to using it.
+See [issue #46](https://github.com/preinking/okd4-helpernode/issues/46) to understand why the `--force` is necessary and an alternative to using it.
 
 
 Scale the router if you need to
@@ -450,4 +450,4 @@ oc patch --namespace=openshift-ingress-operator --patch='{"spec": {"replicas": 3
 
 ## DONE
 
-Your install should be done! You're a OCP master!
+Your install should be done! You're a OKD master!

@@ -5,7 +5,7 @@ helper:
   ipaddr: "192.168.7.77"
 dns:
   domain: "example.com"
-  clusterid: "ocp4"
+  clusterid: "okd4"
   forwarder1: "8.8.8.8"
   forwarder2: "8.8.4.4"
 dhcp:
@@ -44,8 +44,8 @@ other:
   - name: "non-cluster-vm"
     ipaddr: "192.168.7.31"
     macaddr: "52:54:00:f4:2e:2e"
-ocp_bios: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.6.0-0.nightly-2020-09-29-013537/rhcos-4.6.0-0.nightly-2020-09-29-013537-x86_64-live-rootfs.x86_64.img"
-ocp_initramfs: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.6.0-0.nightly-2020-09-29-013537/rhcos-4.6.0-0.nightly-2020-09-29-013537-x86_64-live-initramfs.x86_64.img"
-ocp_install_kernel: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.6.0-0.nightly-2020-09-29-013537/rhcos-4.6.0-0.nightly-2020-09-29-013537-x86_64-live-kernel-x86_64"
-ocp_client: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/4.6.0-0.nightly-2020-09-29-013537/openshift-client-linux-4.6.0-0.nightly-2020-09-29-013537.tar.gz"
-ocp_installer: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/4.6.0-0.nightly-2020-09-29-013537/openshift-install-linux-4.6.0-0.nightly-2020-09-29-013537.tar.gz"
+okd_bios: "https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/pre-release/4.6.0-0.nightly-2020-09-29-013537/fcos-4.6.0-0.nightly-2020-09-29-013537-x86_64-live-rootfs.x86_64.img"
+okd_initramfs: "https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/pre-release/4.6.0-0.nightly-2020-09-29-013537/fcos-4.6.0-0.nightly-2020-09-29-013537-x86_64-live-initramfs.x86_64.img"
+okd_install_kernel: "https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/pre-release/4.6.0-0.nightly-2020-09-29-013537/fcos-4.6.0-0.nightly-2020-09-29-013537-x86_64-live-kernel-x86_64"
+okd_client: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/4.6.0-0.nightly-2020-09-29-013537/openshift-client-linux-4.6.0-0.nightly-2020-09-29-013537.tar.gz"
+okd_installer: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/4.6.0-0.nightly-2020-09-29-013537/openshift-install-linux-4.6.0-0.nightly-2020-09-29-013537.tar.gz"

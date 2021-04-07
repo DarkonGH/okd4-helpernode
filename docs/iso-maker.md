@@ -1,4 +1,4 @@
-# RHCOS ISO Maker
+# FCOS ISO Maker
 
 You can create a custom ISO using [Chuckers' ISO Maker repo](https://github.com/chuckersjp/coreos-iso-maker). This playbook will create a single ISO that has a menu entry for each component (bootstrap/masters/workers).
 
@@ -8,7 +8,7 @@ Although very useful, with my opinionated playbook and his opinionated playbook;
 
 ## Cloning The Repo
 
-I assume you've done all the steps up to (and including) [creating the ignition files](https://github.com/RedHatOfficial/ocp4-helpernode/blob/master/docs/quickstart-static.md#create-ignition-configs). After the ignition files have been created and copied over to your webserver, clone the ISO maker repo.
+I assume you've done all the steps up to (and including) [creating the ignition files](https://github.com/preinking/okd4-helpernode/blob/master/docs/quickstart-static.md#create-ignition-configs). After the ignition files have been created and copied over to your webserver, clone the ISO maker repo.
 
 ```
 cd ~
@@ -32,18 +32,18 @@ webserver_url: 192.168.7.77
 webserver_port: 8080
 install_drive: vda
 
-ocp_version: 4.5.2
+okd_version: 4.5.2
 iso_checksum: 48e3cbbb632795f1cb4a5713d72c30b438a763468495db69c0a2ca7c7152856a
-iso_name: rhcos-{{ ocp_version }}-x86_64-installer.x86_64.iso
-rhcos_bios: bios.raw.gz
+iso_name: fcos-{{ okd_version }}-x86_64-installer.x86_64.iso
+fcos_bios: bios.raw.xz
 ...
 ```
 
 Few things to note:
 
-* `iso_name` is found on the [mirror site](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/)
-* `iso_checksum` is another thing you need to change that can also be found on the [OpenShift Mirror](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/) in the `sha256sum.txt` file.
-* `rhcos_bios` is the name of your bios file on the helpernode.
+* `iso_name` is found on the [mirror site](https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/)
+* `iso_checksum` is another thing you need to change that can also be found on the [OpenShift Mirror](https://mirror.openshift.com/pub/openshift-v4/dependencies/fcos/) in the `sha256sum.txt` file.
+* `fcos_bios` is the name of your bios file on the helpernode.
 
 You also need to edit the `inventory.yml` file based on your environment.
 
@@ -53,26 +53,26 @@ all:
   children:
     bootstrap:
       hosts:
-        bootstrap.ocp4.example.com:
+        bootstrap.okd4.example.com:
           ipv4: 192.168.7.20
     
     masters:
       hosts:
-        master0.ocp4.example.com:
+        master0.okd4.example.com:
           ipv4: 192.168.7.21
 
-        master1.ocp4.example.com:
+        master1.okd4.example.com:
           ipv4: 192.168.7.22
 
-        master2.ocp4.example.com:
+        master2.okd4.example.com:
           ipv4: 192.168.7.23
         
     workers:
       hosts:
-        worker0.ocp4.example.com:
+        worker0.okd4.example.com:
           ipv4: 192.168.7.11
 
-        worker1.ocp4.example.com:
+        worker1.okd4.example.com:
           ipv4: 192.168.7.12
 ...
 ```
@@ -82,7 +82,7 @@ all:
 You'll need to move some stuff around where the ISO maker expects them to find them.
 
 ```
-cp /var/www/html/install/bios.raw.gz /var/www/html/
+cp /var/www/html/install/bios.raw.xz /var/www/html/
 cp /var/www/html/ignition/*.ign /var/www/html/
 ln -s /var/www/html/worker.ign /var/www/html/workers.ign
 ln -s /var/www/html/master.ign /var/www/html/masters.ign
@@ -98,18 +98,18 @@ Now run the playbook.
 ansible-playbook playbook-single.yml
 ```
 
-The playbook will create the ISO file `/tmp/rhcos_install-cluster.iso`. You can use this to boot all your nodes.
+The playbook will create the ISO file `/tmp/fcos_install-cluster.iso`. You can use this to boot all your nodes.
 
 ## Booting Into ISO
 
 When you boot into this ISO, you'll be greeted with the following menu.
 
-![isomaker](images/rhcos-iso-maker.png)
+![isomaker](images/fcos-iso-maker.png)
 
 Choose the correct option for the server you're installing. I would boot them in the following order: bootstrap, masters, and then workers.
 
 ## Success
 
-Once you've booted into the right option, RHCOS will install with the right IP address.
+Once you've booted into the right option, FCOS will install with the right IP address.
 
-You're now ready to continue with [the next step](https://github.com/RedHatOfficial/ocp4-helpernode/blob/master/docs/quickstart-static.md#wait-for-install) of the install.
+You're now ready to continue with [the next step](https://github.com/preinking/okd4-helpernode/blob/master/docs/quickstart-static.md#wait-for-install) of the install.

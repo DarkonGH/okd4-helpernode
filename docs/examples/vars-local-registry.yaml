@@ -5,7 +5,7 @@ helper:
   ipaddr: "192.168.7.77"
 dns:
   domain: "example.com"
-  clusterid: "ocp4"
+  clusterid: "okd4"
   forwarder1: "8.8.8.8"
   forwarder2: "8.8.4.4"
 dhcp:
@@ -49,7 +49,7 @@ setup_registry:
   deploy: true
   autosync_registry: true
   registry_image: docker.io/library/registry:2
-  local_repo: "ocp4/openshift4"
+  local_repo: "okd4/openshift4"
   product_repo: "openshift-release-dev"
   release_name: "ocp-release"
   release_tag: "4.4.9-x86_64"

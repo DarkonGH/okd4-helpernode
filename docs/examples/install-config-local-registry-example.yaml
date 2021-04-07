@@ -9,7 +9,7 @@ controlPlane:
   name: master
   replicas: 3
 metadata:
-  name: ocp4
+  name: okd4
 networking:
   clusterNetworks:
   - cidr: 10.254.0.0/16
@@ -19,7 +19,7 @@ networking:
   - 172.30.0.0/16
 platform:
   none: {}
-pullSecret: '{"auths":{"registry.ocp4.example.com:5000": {"auth": "ZHVtbXk6ZHVtbXk=","email": "noemail@localhost"}},{...}}'
+pullSecret: '{"auths":{"registry.okd4.example.com:5000": {"auth": "ZHVtbXk6ZHVtbXk=","email": "noemail@localhost"}},{...}}'
 sshKey: 'ssh-rsa AAAA...'
 additionalTrustBundle: |
   -----BEGIN CERTIFICATE-----
@@ -27,9 +27,9 @@ additionalTrustBundle: |
   -----END CERTIFICATE-----
 imageContentSources:
 - mirrors:
-  - registry.ocp4.example.com:5000/ocp4/openshift4
+  - registry.okd4.example.com:5000/okd4/openshift4
   source: quay.io/openshift-release-dev/ocp-release-nightly
 - mirrors:
-  - registry.ocp4.example.com:5000/ocp4/openshift4
+  - registry.okd4.example.com:5000/okd4/openshift4
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 
